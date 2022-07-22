@@ -13,7 +13,7 @@ class _ChooseLocationState extends State<ChooseLocation> {
   void getData(){
 
     //simulate network request for a username
-    
+
 
   }
 
