@@ -1,7 +1,8 @@
 
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, unused_import
 
 import 'package:flutter/material.dart';
+import 'package:myapp2/login.dart';
 import 'package:myapp2/main.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -22,7 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.deepPurpleAccent,
-        title: Text('FORMULA 1 HOSTEL BOOKING '),
+        title: Text('MY APP'),
         elevation: 10.0,
 
       ),
@@ -54,11 +55,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Sign Up',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 40.0
+                      Center(
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 40.0
+                          ),
                         ),
                       ),
                       SizedBox(height: 30.0,),
@@ -145,7 +148,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                           },
                             child: Text("Log in",
-                              style: TextStyle(fontSize: 15),
+                              style: TextStyle(fontSize: 15,
+                              color: Colors.deepPurpleAccent
+                              ),
                             ),)
                         ],
                       ),
