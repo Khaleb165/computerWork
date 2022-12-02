@@ -1,6 +1,8 @@
 
 // ignore_for_file: prefer_const_constructors, unused_import
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp2/login.dart';
 import 'package:myapp2/main.dart';
@@ -14,26 +16,20 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   bool hide = true;
-  TextEditingController password = TextEditingController();
-  TextEditingController confirmPassword = TextEditingController();
+  TextEditingController _emailTextController = TextEditingController();
+  TextEditingController _passwordTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurpleAccent,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.deepPurpleAccent,
-        title: Text('MY APP'),
-        elevation: 10.0,
-
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(80,35,40,0),
+                  padding: const EdgeInsets.fromLTRB(80,100,40,0),
                   child: Text(
                     "CREATE Y0UR \n ACCOUNT",
                     style: TextStyle(
@@ -45,7 +41,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 35, vertical: 20),
-                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.28),
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.4),
                   width: double.infinity,
                   height: 550,
                   decoration: BoxDecoration(
@@ -66,21 +62,39 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       SizedBox(height: 30.0,),
                       TextField(
+                        controller: _emailTextController,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                            hintText: 'E-mail'
+                            hintText: 'E-mail',
+                            filled: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            fillColor: Colors.white.withOpacity(0.3),
+                            contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(width:1,style: BorderStyle.none,color: Colors.grey)
+                            )
+
+                        ),
+                      ),
+                      SizedBox(height: 20.0,),
+                      TextField(
+                        decoration: InputDecoration(
+                            hintText: 'Username',
+                            filled: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            fillColor: Colors.white.withOpacity(0.3),
+                            contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(width:1,style: BorderStyle.none,color: Colors.grey)
+                            )
                         ),
 
                       ),
                       SizedBox(height: 20.0,),
                       TextField(
-                        decoration: InputDecoration(
-                            hintText: 'Username'
-                        ),
-
-                      ),
-                      SizedBox(height: 20.0,),
-                      TextField(
-                        controller: password,
+                        controller: _passwordTextController,
                         obscureText: hide,
                         decoration: InputDecoration(
                             hintText: 'Password',
@@ -92,42 +106,37 @@ class _SignUpPageState extends State<SignUpPage> {
                               },
                               icon:hide? Icon(Icons.visibility_off):
                               Icon(Icons.visibility),
+                            ),
+                            filled: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            fillColor: Colors.white.withOpacity(0.3),
+                            contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(width:1,style: BorderStyle.none,color: Colors.grey)
                             )
                         ),
                       ),
-                      SizedBox(height: 20.0,),
-                      TextField(
-                        controller: confirmPassword,
-                        obscureText: hide,
-                        decoration: InputDecoration(
-                            hintText: 'Confirm Password',
-                            suffixIcon: IconButton(
-                              onPressed: (){
-                                setState(() {
-                                  hide= !hide;
-                                });
-                              },
-                              icon:hide? Icon(Icons.visibility_off):
-                              Icon(Icons.visibility),
-                            )
-                        ),
-                      ),
+
                       SizedBox(height: 15.0,),
                       Center(
                         child: ElevatedButton(
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.deepPurpleAccent,
-                            padding: EdgeInsets.symmetric(horizontal: 45,vertical: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 65,vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))
                           ),
                           onPressed: (){
-                            if(password.text != confirmPassword.text){
-                              showDialog(context: context, builder: (context){
-                                return AlertDialog(
-                                  title: Text('Messages'),
-                                  content: Text('Passwords do not match'),
-                                );
-                              }
-                              );}
+                            FirebaseAuth.instance.createUserWithEmailAndPassword(
+                              email: _emailTextController.text,
+                              password:_passwordTextController.text ,).then((value) {
+                                print('Account created');
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                            }).onError((error, stackTrace) {
+                              print('Error ${error.toString()}');
+                              showDialog(context: context, builder: (context) => AlertDialog(content: Text(error.toString()),));
+
+                            });
                           },
                           child: Text(
                             'Sign up',

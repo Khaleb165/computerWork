@@ -1,8 +1,12 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, unused_import
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp2/forgotPassword.dart';
+import 'package:myapp2/loginPage.dart';
 import 'package:myapp2/signup.dart';
-import 'dart:math' as math;
+import 'package:animated_text_kit/animated_text_kit.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,43 +16,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage>
-    with TickerProviderStateMixin
 {
   bool hide = true;
-  final _formKey = GlobalKey<FormState>();
-  late AnimationController animationController;
-  late Animation<double> animation;
-  @override
-  void initState(){
-    super.initState();
-    animationController = AnimationController(duration: Duration(seconds: 5),vsync: this);
-
-    animation = Tween<double>(begin: 0, end: 2 * math.pi,
-    ).animate(AnimationController(vsync:this)
-    ..addListener(() {
-      setState(() {});
-    })
-    ..addStatusListener((status) {
-      if (status == AnimationStatus.completed){
-        animationController.reverse();
-      }else if(status == AnimationStatus.dismissed){
-        animationController.forward();
-      }
-    }));
-
-    animationController.forward();
-  }
+  TextEditingController _emailTextController = TextEditingController();
+  TextEditingController _passwordTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.deepPurpleAccent,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.deepPurpleAccent,
-        title: Text("MY APP"),
-        elevation: 10.0,
-      ),
 
       body: SingleChildScrollView(
         child: Column(
@@ -57,23 +33,34 @@ class _LoginPageState extends State<LoginPage>
               children: [
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(80, 40, 80, 0),
-                    child: Transform.rotate(
-                      angle: animation.value,
-                    child:Container(
-                      child: Image.asset('assets/c4.gif',
-                      scale: 2,
-                      )
+                    padding: EdgeInsets.fromLTRB(40,30,40,0),
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: Container(
+                              decoration: BoxDecoration(color: Colors.deepPurpleAccent),
+                              height: 20.0,
+                              width: 360.0,
+                            ),
+                          ),
+                          logoWidget('assets/mylogo.png'),
+                        ],
+                      ),
                     ),
                     ),
                   ),
-                ),
+                ]),
 
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 35,vertical: 20),
-                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.36),
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.18),
                   width: double.infinity,
-                  height: 500,
+                  height: 550,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(topRight: Radius.elliptical(100, 100), topLeft: Radius.elliptical(100, 100)),
@@ -90,79 +77,150 @@ class _LoginPageState extends State<LoginPage>
                       ),
                       SizedBox(height: 30.0,),
 
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            TextField(
-                              decoration: InputDecoration(
-                                  hintText: 'Username'
-                              ),
-                            ),
-                            SizedBox(height: 20.0,),
+                      Column(
+                        children: [
+                          TextField(
+                            controller: _emailTextController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                                hintText: 'E-mail',
+                                filled: true,
+                                floatingLabelBehavior: FloatingLabelBehavior.never,
+                                fillColor: Colors.white.withOpacity(0.3),
+                                contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                    borderSide: BorderSide(width:1,style: BorderStyle.none,color: Colors.grey)
+                                )
 
-                            TextField(
-                              obscureText: hide,
-                              decoration: InputDecoration(
-                                  hintText: 'Password',
-                                  suffixIcon: IconButton(
-                                    onPressed: (){
-                                      setState(() {
-                                        hide = !hide;
-                                      });
-                                    },
-                                    icon: hide? Icon(Icons.visibility_off):
-                                    Icon(Icons.visibility),
-                                  )
+                            ),
+                          ),
+                          SizedBox(height: 20.0,),
+
+                          TextField(
+                            controller: _passwordTextController,
+                            obscureText: hide,
+                            decoration: InputDecoration(
+                                labelText: 'Password',
+                                hintText: 'enter your password',
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      hide = !hide;
+                                    });
+                                  },
+                                  icon: hide? Icon(Icons.visibility_off):
+                                  Icon(Icons.visibility),
+                                  color: Colors.deepPurpleAccent,
+                                ),
+                              filled: true,
+                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              fillColor: Colors.white.withOpacity(0.3),
+                              contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide(width:1,style: BorderStyle.none,color: Colors.grey)
+                              )
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: TextButton(
+                              onPressed: (){
+                                Navigator.of(context);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordPage()));
+                              },
+                              child: Text('Forgot password?',
+                              style: TextStyle(
+                                color: Colors.deepPurpleAccent
+                              ),
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: TextButton(
-                                onPressed: (){},
-                                child: Text('Forgot password?',
+                          ),
+                          Center(
+                            child: ElevatedButton(
+                              style: TextButton.styleFrom(
+                                  backgroundColor: Colors.deepPurpleAccent,
+                                  padding: EdgeInsets.symmetric(horizontal: 65,vertical: 10),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))
+                              ),
+                              onPressed: (){
+                                FirebaseAuth.instance.signInWithEmailAndPassword(
+                                    email: _emailTextController.text.trim(),
+                                    password: _passwordTextController.text.trim()).then((value) {
+                                      print('Signed in');
+                                  Navigator.of(context);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPageMain()));
+                                }).onError((error, stackTrace) {
+                                  print('Error ${error.toString().trim()}');
+                                  showDialog(context: context, builder: (context) => AlertDialog(content: Text(error.toString().trim()),));
+
+                                });
+                              },
+                              child: Text(
+                                'Log in',
                                 style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Don't have an account yet?" ,
+                                style: TextStyle(fontSize: 15),
+
+                              ),
+                              TextButton(onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                              },
+                                child: Text("Sign up",
+                                  style: TextStyle(fontSize: 15,
                                   color: Colors.deepPurpleAccent
-                                ),
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: ElevatedButton(
-                                style: TextButton.styleFrom(
-                                    backgroundColor: Colors.deepPurpleAccent,
-                                    padding: EdgeInsets.symmetric(horizontal: 45,vertical: 10)
-                                ),
-                                onPressed: (){},
-                                child: Text(
-                                  'Log in',
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
                                   ),
-                                ),
+
+                                ),)
+                            ],
+                          ),
+                          SizedBox(height: 20,),
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: Colors.black,)),
+                              SizedBox(width: 4,),
+                              Text('Or sign in with',
+                              style: TextStyle(
+                                fontSize: 16
+                              ),),
+                              SizedBox(width: 4,),
+                              Expanded(child: Divider(color: Colors.black,)),
+                            ],
+                          ),
+                          SizedBox(height: 15,),
+                          
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                             // Padding(padding: EdgeInsets.all(16)),
+                              IconButton(onPressed: (){},
+                                  icon: Image.asset('assets/google.png'),
+                                iconSize: 50,
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("Don't have an account yet?" ,
-                                  style: TextStyle(fontSize: 18),
-
-                                ),
-                                TextButton(onPressed: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
-                                },
-                                  child: Text("Sign up",
-                                    style: TextStyle(fontSize: 15,
-                                    color: Colors.deepPurpleAccent
-                                    ),
-
-                                  ),)
-                              ],
-                            ),
-                          ],
-                        ),
+                              IconButton(onPressed: (){},
+                                  icon: Image.asset('assets/Facebook.png',),
+                                iconSize: 50,
+                              ),
+                              IconButton(onPressed: (){},
+                                  icon: Image.asset('assets/github.png'),
+                                iconSize: 50,
+                              ),
+                            ],
+                          )
+                        ],
                       ),
 
                     ],
@@ -171,15 +229,18 @@ class _LoginPageState extends State<LoginPage>
 
               ],
             ),
-          ],
         ),
-      ),
-    );
+      );
+
   }
-  @override
-  void dispose(){
-    animationController.dispose();
-    super.dispose();
+
+  Image logoWidget (String imageName) {
+    return Image.asset(
+      imageName,
+      fit: BoxFit.fitWidth,
+      width: 120,
+      height: 120,
+    );
   }
 }
 

@@ -4,7 +4,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:myapp2/login.dart';
+import 'package:myapp2/onBoard.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Timer(const Duration(milliseconds: 2000), (){
       setState(() {
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+            MaterialPageRoute(builder: (context) => const OnBoardScreen()), (route) => false);
       });
     });
 
@@ -51,25 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
         duration: const Duration(milliseconds: 1200),
         child: Center(
           child: Container(
-            height: 140.0,
-            width: 140.0,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 2.0,
-                    offset: const Offset(5.0, 3.0),
-                    spreadRadius: 2.0,
-                  )
-                ]
-            ),
-            child:  const Center(
-              child: ClipOval(
-                child: Icon(Icons.local_hotel_outlined, size: 150,), //put your logo here
-              ),
-            ),
+            child: Image.asset('assets/mylogo.png',
+            scale: 20,),
           ),
         ),
       ),
